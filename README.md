@@ -2,10 +2,15 @@
 
 A tool to convert IPython Notebooks to markdown and back.
 
-    ## notebook -> markdown
-    $ bookmarkd md --output bar.md foo.ipynb
     ## markdown -> notebook
-    $ bookmarkd ipynb --output baz.ipynb bar.md
+    $ bookmarkd convert foo.md foo.ipynb
+    ## notebook -> markdown, not done yet
+    $ bookmarkd convert foo.ipynb foo.md
+
+    # receive markdown via stdin
+    $ bookmarkd convert - foo.ipynb
+    # output notebook on stdout
+    $ bookmarkd convert foo.md -
 
 The conversion process isn't lossless. For example, the notebook cell numbers
 and stored results aren't preserved.
