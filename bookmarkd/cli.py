@@ -40,10 +40,9 @@ def version():
 @click.argument("infile", type=click.File('rb'))
 @click.argument("outfile", type=click.File('wb'))
 def convert(infile, outfile):
-    if infile.name.endswith('.md'):
+    if infile.name.endswith('.md') or outfile.name.endswith('.ipynb'):
         pynb = md_to_nb(infile)
         outfile.write(pynb)
-
     else:
         click.echo("Only markdown -> notebook conversion is "
                    "currently supported")
