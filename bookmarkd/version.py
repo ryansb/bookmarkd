@@ -20,4 +20,4 @@ along with bookmarkd.  If not, see <http://www.gnu.org/licenses/>.
 
 import pkg_resources
 
-__version__ = pkg_resources.get_distribution('ofcourse').version
+__version__ = pkg_resources.get_distribution('bookmarkd').version
