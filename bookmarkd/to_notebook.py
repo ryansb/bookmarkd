@@ -25,31 +25,39 @@ import CommonMark as markdown
 from IPython.nbformat import current
 
 
-def to_notebook(infile):
+def to_notebook(infile, hr_separated=False):
     """Given markdown, returns an ipynb compliant JSON string"""
 
     parser = markdown.DocParser()
     ast = json.loads(markdown.ASTtoJSON(
         parser.parse(infile.read())))
 
-    cells = []
+    cells = [current.new_text_cell('markdown', '')]
 
     for block in ast.get('children', []):
         if block['t'] in ["IndentedCode", "FencedCode"]:
             cells.append(current.new_code_cell(block['string_content']))
         elif block['t'] in ['SetextHeader', 'ATXHeader']:
-            cells.append(current.new_text_cell(
-                'markdown',
-                '#' * block.get('level', 1) + ' ' + ''.join(block['strings']))
-            )
+            src = '{} {}'.format(
+                '#' * block.get('level', 1),
+                ''.join(block['strings'])
+            ).rstrip()
+            if hr_separated and cells[-1]['cell_type'] is 'markdown':
+                cells[-1]['source'] += '\n\n{}'.format(src)
+            else:
+                cells.append(current.new_text_cell('markdown', src))
         elif block['t'] in ['HorizontalRule']:
             # We don't render horizontal rules
-            pass
+            if hr_separated:
+                cells.append(current.new_text_cell('markdown', ''))
         else:
-            cells.append(current.new_text_cell(
-                'markdown',
-                '\n'.join(block['strings']))
-            )
+            src = '\n'.join(block['strings']).rstrip()
+            if hr_separated and cells[-1]['cell_type'] is 'markdown':
+                cells[-1]['source'] += '\n\n{}'.format(src)
+            else:
+                cells.append(current.new_text_cell('markdown', src))
+
+    cells = tidy_notebook(cells[:])
 
     worksheet = current.new_worksheet(cells=cells)
 
