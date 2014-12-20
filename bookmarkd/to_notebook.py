@@ -58,4 +58,5 @@ def to_notebook(infile):
         worksheets=[worksheet]
     )
 
-    return json.dumps(nb, indent=2)
+    # using the indent option leaves a bunch of trailing whitespace. No thanks!
+    return json.dumps(nb, indent=2).replace(' \n', '\n')
