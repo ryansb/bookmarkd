@@ -36,7 +36,9 @@ def to_notebook(infile, hr_separated=False):
 
     for block in ast.get('children', []):
         if block['t'] in ["IndentedCode", "FencedCode"]:
-            cells.append(current.new_code_cell(block['string_content']))
+            cells.append(current.new_code_cell(
+                block['string_content'].rstrip()
+            ))
         elif block['t'] in ['SetextHeader', 'ATXHeader']:
             src = '{} {}'.format(
                 '#' * block.get('level', 1),
