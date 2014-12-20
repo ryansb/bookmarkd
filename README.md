@@ -6,7 +6,7 @@ With `bookmarkd` you can use any text editor you like to write markdown with
 Python code blocks and render them as an IPython notebook.
 
 This README can be converted to a notebook using the command
-`bookmarkd convert --join-blocks README.md README.ipynb`
+`bookmarkd convert README.md README.ipynb`
 
 ## Usage
 
@@ -22,18 +22,22 @@ This README can be converted to a notebook using the command
     # output notebook on stdout
     $ bookmarkd convert foo.md -
 
-There's also a `--join-blocks` option that will merge adjacent markdown blocks
-if they aren't separated by a line with a horizontal rule (`---`).
+
+Code blocks are converted to IPython notebook cells, and each markdown section between code blocks is made into a markdown cell in the notebook. To manually separate markdown into cells, separate blocks with horizontal rules (`---`).
+
+The `--no-join-blocks` option will force each markdown block to become its own cell in the notebook.
+
+---
 
 Let's see some Python now!
 
     print "Hello World"
 
-When you write multiple markdown blocks and separate them with a 
-`---`
+This is how blocks separated by `---` are rendered
 
-They will be rendered as separate markdown cells, but blocks that aren't
-separated will just be merged nto the same cell.
+---
+
+They become separate markdown cells instead of being merged together.
 
 Now let's see some more Python.
 

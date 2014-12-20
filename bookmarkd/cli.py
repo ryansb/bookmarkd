@@ -37,15 +37,15 @@ def version():
 
 
 @cli.command(short_help="Do the conversion")
-@click.option("--join-blocks", default=False, is_flag=True,
+@click.option("--no-join-blocks", default=False, is_flag=True,
               help="join adjacent markdown blocks together instead of giving "
               "each their own cell. Blocks can be manually separated with "
               "horizontal rules (---)")
 @click.argument("infile", type=click.File('rb'))
 @click.argument("outfile", type=click.File('wb'))
-def convert(join_blocks, infile, outfile):
+def convert(no_join_blocks, infile, outfile):
     if infile.name.endswith('.md') or outfile.name.endswith('.ipynb'):
-        pynb = md_to_nb(infile, hr_separated=join_blocks)
+        pynb = md_to_nb(infile, hr_separated=(not no_join_blocks))
         outfile.write(pynb)
     else:
         click.echo("Only markdown -> notebook conversion is "
