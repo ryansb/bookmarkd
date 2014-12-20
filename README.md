@@ -12,7 +12,7 @@ This README can be converted to a notebook using the command
 
     ## markdown -> notebook
     $ bookmarkd convert foo.md foo.ipynb
-    ## notebook -> markdown, not done yet
+    ## notebook -> markdown
     $ bookmarkd convert foo.ipynb foo.md
     ## notebook -> markdown using nbconvert
     $ ipython nbconvert --to markdown foo.ipynb

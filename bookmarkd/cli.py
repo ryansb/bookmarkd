@@ -18,6 +18,9 @@ You should have received a copy of the GNU Affero General Public License
 along with bookmarkd.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from subprocess import Popen
+from tempfile import NamedTemporaryFile
+
 import click
 
 from bookmarkd.version import __version__
@@ -47,6 +50,22 @@ def convert(no_join_blocks, infile, outfile):
     if infile.name.endswith('.md') or outfile.name.endswith('.ipynb'):
         pynb = md_to_nb(infile, hr_separated=(not no_join_blocks))
         outfile.write(pynb)
+    elif infile.name.endswith('.ipynb') or outfile.name.endswith('.md'):
+        args = ['ipython', 'nbconvert', '--to', 'markdown']
+        if infile.name == '<stdin>':
+            with NamedTemporaryFile('w', suffix='.ipynb', delete=False) as temp:
+                args.append(temp.name)
+                temp.write(infile.read())
+        else:
+            args.append(infile.name)
+        if outfile.name == '<stdout>':
+            args.append('--stdout')
+        else:
+            args.append('--output="{}"'.format(outfile.name.replace('.md', '')))
+
+        p = Popen(args)
+        p.wait()
     else:
-        click.echo("Only markdown -> notebook conversion is "
-                   "currently supported")
+        click.echo("One of the files (either in- or out-) "
+                   "needs to have a .md or .ipynb suffix "
+                   "so we know which way to convert.")
