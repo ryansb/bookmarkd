@@ -37,6 +37,14 @@ def to_notebook(infile):
     for block in ast.get('children', []):
         if block['t'] in ["IndentedCode", "FencedCode"]:
             cells.append(current.new_code_cell(block['string_content']))
+        elif block['t'] in ['SetextHeader', 'ATXHeader']:
+            cells.append(current.new_text_cell(
+                'markdown',
+                '#' * block.get('level', 1) + ' ' + ''.join(block['strings']))
+            )
+        elif block['t'] in ['HorizontalRule']:
+            # We don't render horizontal rules
+            pass
         else:
             cells.append(current.new_text_cell(
                 'markdown',
