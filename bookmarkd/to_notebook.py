@@ -60,3 +60,15 @@ def to_notebook(infile):
 
     # using the indent option leaves a bunch of trailing whitespace. No thanks!
     return json.dumps(nb, indent=2).replace(' \n', '\n')
+
+
+def tidy_notebook(cells):
+    for index, cell in enumerate(cells):
+        if cell['cell_type'] is 'markdown':
+            cells[index]['source'] = cells[index]['source'].strip()
+
+    return filter(
+        # filter out empty markdown cells
+        lambda c: c['cell_type'] is not 'markdown' or c['source'],
+        cells
+    )

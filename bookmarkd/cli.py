@@ -37,11 +37,12 @@ def version():
 
 
 @cli.command(short_help="Do the conversion")
+@click.option("--joinblocks", default=False, is_flag=True)
 @click.argument("infile", type=click.File('rb'))
 @click.argument("outfile", type=click.File('wb'))
-def convert(infile, outfile):
+def convert(joinblocks, infile, outfile):
     if infile.name.endswith('.md') or outfile.name.endswith('.ipynb'):
-        pynb = md_to_nb(infile)
+        pynb = md_to_nb(infile, hr_separated=joinblocks)
         outfile.write(pynb)
     else:
         click.echo("Only markdown -> notebook conversion is "
