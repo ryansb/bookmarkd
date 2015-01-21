@@ -33,31 +33,29 @@ def to_notebook(infile, hr_separated=False):
         parser.parse(infile.read())))
 
     cells = [current.new_text_cell('markdown', '')]
-
+    infile.seek(0)
     for block in ast.get('children', []):
+        lines = 1 + block['end_line'] - block['start_line']
+        content = ""
+        for i in range(lines):
+            content += infile.readline()
+        print lines
+        print content,
         if block['t'] in ["IndentedCode", "FencedCode"]:
             cells.append(current.new_code_cell(
                 block['string_content'].rstrip()
             ))
-        elif block['t'] in ['SetextHeader', 'ATXHeader']:
-            src = '{} {}'.format(
-                '#' * block.get('level', 1),
-                ''.join(block['strings'])
-            ).rstrip()
-            if hr_separated and cells[-1]['cell_type'] is 'markdown':
-                cells[-1]['source'] += '\n\n{}'.format(src)
-            else:
-                cells.append(current.new_text_cell('markdown', src))
         elif block['t'] in ['HorizontalRule']:
             # We don't render horizontal rules
             if hr_separated:
                 cells.append(current.new_text_cell('markdown', ''))
+        elif not block.get('string_content', "fooooo").strip():
+            pass
         else:
-            src = '\n'.join(block['strings']).rstrip()
             if hr_separated and cells[-1]['cell_type'] is 'markdown':
-                cells[-1]['source'] += '\n\n{}'.format(src)
+                cells[-1]['source'] += content
             else:
-                cells.append(current.new_text_cell('markdown', src))
+                cells.append(current.new_text_cell('markdown', content))
 
     cells = tidy_notebook(cells[:])
 
